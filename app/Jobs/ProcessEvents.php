@@ -47,7 +47,10 @@ class ProcessEvents implements ShouldQueue
 	public function __construct(Command $command = null)
 	{
 		$this->command = $command;
+	}
 
+	public function boot()
+	{
 		$this->filtersModel = Filter::orderby('count', 'DESC')->get();
 
 		$this->pipes = Pipe::all();
@@ -66,6 +69,7 @@ class ProcessEvents implements ShouldQueue
 	 */
 	public function handle()
 	{
+		$this->boot();
 		$eventsToProcess = 25000;
 		$start = microtime(true);
 
