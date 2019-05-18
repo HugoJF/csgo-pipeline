@@ -15,7 +15,7 @@ redisC.on('connect', function () {
 /**
  * RUNTIME VARIABLES
  */
-let receiverPortIndex = 10001;
+let receiverPortIndex = 20001;
 
 class Server {
     constructor(redisKey, hostname, name, ip, port) {
