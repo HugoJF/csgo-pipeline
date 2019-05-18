@@ -70,7 +70,7 @@ class ProcessEvents implements ShouldQueue
 	public function handle()
 	{
 		$this->boot();
-		$eventsToProcess = 25000;
+		$eventsToProcess = 1000;
 		$start = microtime(true);
 
 		for ($i = 0; $i < $eventsToProcess; $i++) {
