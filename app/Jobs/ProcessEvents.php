@@ -37,7 +37,11 @@ class ProcessEvents implements ShouldQueue
 	/** @var Collection */
 	protected $lines;
 
+	/** @var Command */
 	protected $command;
+
+	/** @var integer */
+	private $eventPerJob;
 
 	/**
 	 * Create a new job instance.
@@ -51,6 +55,7 @@ class ProcessEvents implements ShouldQueue
 
 	public function boot()
 	{
+		$this->eventPerJob = config('pipeline.events_per_job', 1000);
 		$this->filtersModel = Filter::orderby('count', 'DESC')->get();
 
 		$this->pipes = Pipe::all();
@@ -70,10 +75,9 @@ class ProcessEvents implements ShouldQueue
 	public function handle()
 	{
 		$this->boot();
-		$eventsToProcess = 1000;
 		$start = microtime(true);
 
-		for ($i = 0; $i < $eventsToProcess; $i++) {
+		for ($i = 0; $i < $this->eventPerJob; $i++) {
 
 			$raw = Redis::command('lpop', ['entry']);
 
@@ -85,7 +89,7 @@ class ProcessEvents implements ShouldQueue
 		$end = microtime(true);
 
 		$duration = $end - $start;
-		$this->info("Processing of $eventsToProcess events took: {$duration} seconds");
+		$this->info("Processing of {$this->eventPerJob} events took: {$duration} seconds");
 	}
 
 	/**
@@ -152,9 +156,13 @@ class ProcessEvents implements ShouldQueue
 		$pipes->each(function ($pipe) use ($data) {
 			$llen = Redis::command('llen', [$pipe->key]);
 
-			// Only push if length is under limit
-			if ($llen < $pipe->limit)
+			// Only push if length is under limit or pop_on_limit is true
+			if ($llen < $pipe->limit || $pipe->pop_on_limit)
 				Redis::command('rpush', [$pipe->key, json_encode($data)]);
+
+			// Pop oldest value if we are over limits
+			if ($llen >= $pipe->limit && $pipe->pop_on_limit)
+				Redis::command('lpop', [$pipe->key]);
 		});
 	}
 

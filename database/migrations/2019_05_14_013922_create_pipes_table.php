@@ -18,6 +18,7 @@ class CreatePipesTable extends Migration
 
 			$table->string('key');
 			$table->unsignedInteger('limit');
+			$table->boolean('pop_on_limit')->default(false);
 
 			$table->timestamps();
 		});
