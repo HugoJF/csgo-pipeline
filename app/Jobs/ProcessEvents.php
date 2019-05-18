@@ -14,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class ProcessEvents implements ShouldQueue
@@ -43,7 +44,7 @@ class ProcessEvents implements ShouldQueue
 	 *
 	 * @param Command $command
 	 */
-	public function __construct(Command $command)
+	public function __construct(Command $command = null)
 	{
 		$this->command = $command;
 
@@ -74,13 +75,13 @@ class ProcessEvents implements ShouldQueue
 
 			$res = $this->handleEvent($raw);
 
-			$this->command->info(json_encode($res));
+			$this->info(json_encode($res));
 		}
 
 		$end = microtime(true);
 
 		$duration = $end - $start;
-		$this->command->info("Processing of $eventsToProcess events took: {$duration} seconds");
+		$this->info("Processing of $eventsToProcess events took: {$duration} seconds");
 	}
 
 	/**
@@ -119,7 +120,7 @@ class ProcessEvents implements ShouldQueue
 			// Store the class that built the event
 			$class = get_class($built);
 
-			$this->command->info('Built command on ' . $class);
+			$this->info('Built command on ' . $class);
 
 			// Get every line that receives this event
 			$lines = $this->getLines($class);
@@ -196,5 +197,19 @@ class ProcessEvents implements ShouldQueue
 		}
 
 		return false;
+	}
+
+	/**
+	 * Auto select between stdout and file logging
+	 *
+	 * @param $message
+	 */
+	protected function info($message)
+	{
+		if ($this->command) {
+			$this->command->info($message);
+		} else {
+			Log::info($message);
+		}
 	}
 }
