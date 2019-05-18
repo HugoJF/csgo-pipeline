@@ -44,6 +44,20 @@ class ProcessEvents implements ShouldQueue
 	private $eventPerJob;
 
 	/**
+	 * Pending pipe Redis list key name
+	 *
+	 * @var string
+	 */
+	private $pendingPipe = 'pending';
+
+	/**
+	 * Max amount of unbuilt events to hold
+	 *
+	 * @var int
+	 */
+	private $pendingPipeSize = 50000;
+
+	/**
 	 * Create a new job instance.
 	 *
 	 * @param Command $command
@@ -122,8 +136,11 @@ class ProcessEvents implements ShouldQueue
 			$built = $csgoEvent::build($event);
 
 			// If nothing was built, return false
-			if (!is_object($built))
+			if (!is_object($built)) {
+				$this->pushToPendingPipe($event);
+
 				continue;
+			}
 
 			// Store the class that built the event
 			$class = get_class($built);
@@ -137,21 +154,34 @@ class ProcessEvents implements ShouldQueue
 			$pipes = $this->getPipes($lines->pluck('pipe_id'));
 
 			// Push data into them
-			$this->pushDataIntoPipes(json_encode($built), $pipes);
+			$this->pushDataToPipes(json_encode($built), $pipes);
 
-			// If event was handled, return it
-			if ($built)
-				return $built;
+			// Return built event
+			return $built;
 		}
 
 		return false;
 	}
 
 	/**
+	 * Push to unbuilt events pipe
+	 *
+	 * @param $string - data to push to pending pipe
+	 */
+	protected function pushToPendingPipe($string)
+	{
+		$llen = Redis::command('llen', [$this->pendingPipeSize]);
+
+		// Push to pending pipe only if under limit
+		if ($llen < $this->pendingPipeSize)
+			Redis::command('rpush', [$this->pendingPipe, $string]);
+	}
+
+	/**
 	 * @param $data  - data to be pushed
 	 * @param $pipes - pipes to push
 	 */
-	protected function pushDataIntoPipes($data, $pipes)
+	protected function pushDataToPipes($data, $pipes)
 	{
 		$pipes->each(function ($pipe) use ($data) {
 			$llen = Redis::command('llen', [$pipe->key]);
