@@ -7,6 +7,7 @@ use App\CsgoEvents\PlayerDamageEvent;
 use App\Filter;
 use App\Line;
 use App\Pipe;
+use App\Server;
 use Illuminate\Bus\Queueable;
 use Illuminate\Console\Command;
 use Illuminate\Queue\SerializesModels;
@@ -37,11 +38,17 @@ class ProcessEvents implements ShouldQueue
 	/** @var Collection */
 	protected $lines;
 
+	/** @var Collection */
+	private $servers;
+
 	/** @var Command */
 	protected $command;
 
 	/** @var integer */
 	private $eventPerJob;
+
+	/** @var bool */
+	private $verbose;
 
 	/**
 	 * Pending pipe Redis list key name
@@ -49,7 +56,6 @@ class ProcessEvents implements ShouldQueue
 	 * @var string
 	 */
 	private $pendingPipe = 'pending';
-
 	/**
 	 * Max amount of unbuilt events to hold
 	 *
@@ -61,10 +67,12 @@ class ProcessEvents implements ShouldQueue
 	 * Create a new job instance.
 	 *
 	 * @param Command $command
+	 * @param bool    $verbose
 	 */
-	public function __construct(Command $command = null)
+	public function __construct(Command $command = null, $verbose = false)
 	{
 		$this->command = $command;
+		$this->verbose = $verbose;
 	}
 
 	public function boot()
@@ -75,6 +83,9 @@ class ProcessEvents implements ShouldQueue
 		$this->pipes = Pipe::all();
 
 		$this->lines = Line::all();
+
+		// TODO: check API for sync and DELETE THE REDIS KEY
+		$this->servers = Server::all();
 
 		$this->filters = $this->filtersModel->map(function ($model) {
 			return FilterBase::fromModel($model);
@@ -88,22 +99,167 @@ class ProcessEvents implements ShouldQueue
 	 */
 	public function handle()
 	{
+		// Queries database for information
 		$this->boot();
+
+		// Store job start time
 		$start = microtime(true);
 
-		for ($i = 0; $i < $this->eventPerJob; $i++) {
+		// Computes redistributed reserves per server
+		$adjustedReserves = $this->calculateEventsPerServer();
 
-			$raw = Redis::command('lpop', ['entry']);
+//		$adjustedReserves->transform(function ($item) {
+//			unset($item['server']);
+//
+//			return $item;
+//		});
+//
+//		dd($adjustedReserves);
+
+		foreach ($adjustedReserves as $data) {
+			// Start start time
+			$s = microtime(true);
+
+			// Extract variables from data
+			$server = $data['server'];
+			$reserve = round($data['adjustedReserve']);
+
+			// Start processing $reserve events from $server
+			$this->processServer($server, $reserve);
+
+			// Store ending time
+			$e = microtime(true);
+
+			// Debug
+			$d = round($e - $s, 3);
+			$this->info("Processed {$reserve} in {$d} seconds from server {$server->ip}:{$server->port}.");
+		}
+
+		// Store job end time
+		$end = microtime(true);
+
+		// Debug
+		$duration = round($end - $start, 3);
+		$this->info("Processing of {$this->eventPerJob} events took: {$duration} seconds");
+	}
+
+	protected function totalPriority(Collection $servers)
+	{
+		return $servers->reduce(function ($acc, $server) {
+			return $acc + $server->priority;
+		}, 0);
+	}
+
+	protected function eventsPerPriority(Collection $servers)
+	{
+		$totalPriority = $this->totalPriority($servers);
+
+		return $this->eventPerJob / $totalPriority;
+	}
+
+	protected function serverKey(Server $server)
+	{
+		return "{$server->ip}:{$server->port}";
+	}
+
+	protected function pipeLength(Server $server)
+	{
+		$serverKey = $this->serverKey($server);
+
+		return Redis::command('llen', [$serverKey]);
+	}
+
+	protected function calculateEventsPerServer()
+	{
+		// Calculate how many events should be processed by priority unit
+		$eventsPerPriority = $this->eventsPerPriority($this->servers);
+
+		// Pre-process server data
+		$eventsPerServer = $this->servers->mapWithKeys(function ($server) use ($eventsPerPriority) {
+			// Number of reserved events
+			$reservedEvents = $eventsPerPriority * $server->priority;
+
+			// Number of pending events
+			$pipeLength = $this->pipeLength($server);
+
+			// Calculate priority based on $eventPerPriority
+			$realPriority = $pipeLength / $eventsPerPriority;
+
+			// Render server key
+			$serverKey = $this->serverKey($server);
+
+			return [
+				$serverKey => [
+					'server'       => $server,
+					'reserve'      => $reservedEvents,
+					'realPriority' => min($server->priority, $realPriority),
+					'pipeLength'   => $pipeLength,
+					'overReserve'  => ($pipeLength > $reservedEvents),
+				],
+			];
+		});
+
+		// Calculate the total un-adjusted priority
+		$totalPriority = $this->totalPriority($this->servers);
+		$this->info("Total priority for all servers is: $totalPriority");
+
+		// Filter over-reserve servers
+		$overReserveServers = $eventsPerServer->filter(function ($server) {
+			return $server['overReserve'];
+		});
+
+		// Calculate the over-reserve priority
+		$totalOverReservePriority = $overReserveServers->reduce(function ($acc, $data) {
+			return $acc + $data['server']->priority;
+		}, 0);
+
+		// Calculate the total priority of servers over reserve
+		$totalRealPriority = $eventsPerServer->reduce(function ($acc, $data) {
+			return $acc + $data['realPriority'];
+		}, 0);
+		$this->info("Over reserve priority: $totalRealPriority");
+
+		// Calculate the available priority for redistribution
+		$availablePriority = $totalPriority - $totalRealPriority;
+		$this->info("Available priority: $availablePriority");
+
+		// Calculate how much priority each over reserve server will receive (based on it's base priority)
+		$extraPriorityPerPriority = $availablePriority / $totalOverReservePriority;
+		$this->info("Extra priority per server: $extraPriorityPerPriority");
+
+		// Calculate the amount of events that each server should receive per extra priority
+		$extraEventsPerPriority = $eventsPerPriority * $extraPriorityPerPriority;
+		$this->info("Extra events per priority: $extraEventsPerPriority");
+
+		// Update original data array
+		$eventsPerServer->transform(function ($data) use ($extraEventsPerPriority) {
+			// If the server is over reserve, increase by what's available
+			if ($data['overReserve'])
+				$data['adjustedReserve'] = $data['reserve'] + $extraEventsPerPriority * $data['server']->priority;
+			// If the server is under reserve, set reserve to the exact amount it needs now
+			else
+				$data['adjustedReserve'] = $data['pipeLength'];
+
+			return collect($data);
+		});
+
+		return $eventsPerServer;
+	}
+
+	protected function processServer(Server $server, $eventCount)
+	{
+		$key = $this->serverKey($server);
+		$llen = Redis::command('llen', [$key]);
+		$eventCount = min($llen, $eventCount);
+
+		for ($i = 0; $i < $eventCount; $i++) {
+			$raw = Redis::command('lpop', [$key]);
 
 			$res = $this->handleEvent($raw);
 
-			$this->info(json_encode($res));
+			if ($this->verbose)
+				$this->info(json_encode($res));
 		}
-
-		$end = microtime(true);
-
-		$duration = $end - $start;
-		$this->info("Processing of {$this->eventPerJob} events took: {$duration} seconds");
 	}
 
 	/**

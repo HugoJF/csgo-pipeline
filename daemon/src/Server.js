@@ -2,9 +2,11 @@ import {executeUrl, requestOptions} from "./helpers";
 import {LogReceiver} from "srcds-log-receiver";
 import redis from 'redis';
 import request from 'request';
+import dotenv from "dotenv";
 
 const redisC = redis.createClient(); //creates a new client
 
+dotenv.config({path: __dirname + '/.env'});
 /**
  * BINDINGS
  */
@@ -15,14 +17,13 @@ redisC.on('connect', function () {
 /**
  * RUNTIME VARIABLES
  */
-let receiverPortIndex = 20001;
+let receiverPortIndex = process.env.BASE_PORT;
 
 class Server {
-    constructor(redisKey, hostname, name, ip, port) {
+    constructor(hostname, name, ip, port) {
         /**************
          * PROPERTIES *
          **************/
-        this.redisKey = redisKey;
         this.hostname = hostname;
         this.name = name;
         this.ip = ip;
@@ -133,7 +134,7 @@ class Server {
      * @param data
      */
     onValidData(data) {
-        redisC.rpush([this.redisKey, `${this.address()} - ${data.message}`], this.redisCallback);
+        redisC.rpush([this.address(), data.message], this.redisCallback.bind(this));
     }
 
     /**
@@ -146,7 +147,7 @@ class Server {
         if (err) {
             console.error(err);
         } else {
-            console.log(reply);
+            console.log(this.toString() + ' ' + reply);
         }
     }
 

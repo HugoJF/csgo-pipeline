@@ -1,14 +1,8 @@
-import request from 'request';
 import dotenv from 'dotenv';
+dotenv.config({path: __dirname + '/.env'});
+import request from 'request';
 import Server from "./Server";
 import {listServersUrl, requestOptions} from "./helpers";
-
-dotenv.config({path: __dirname + '/.env'});
-
-/*************
- *    ENV    *
- *************/
-const REDIS_KEY = 'entry';
 
 /*******************
  *    VARIABLES    *
@@ -25,7 +19,7 @@ function log() {
 
 function processServers(err, res, body) {
     if (err) {
-        log('Error while request server list');
+        log('Error while request server list: ' + err);
         return;
     }
 
@@ -42,7 +36,7 @@ function processServers(err, res, body) {
     let response = body.response;
 
     servers = response.map(({hostname, name, ip, port}) => (
-        new Server(REDIS_KEY, hostname, name, ip, port)
+        new Server(hostname, name, ip, port)
     ));
 
     servers.forEach((server) => server.boot());

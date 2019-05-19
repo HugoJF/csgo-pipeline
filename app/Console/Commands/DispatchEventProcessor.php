@@ -38,6 +38,6 @@ class DispatchEventProcessor extends Command
 	 */
 	public function handle()
 	{
-		dispatch_now(new ProcessEvents($this));
+		dispatch_now(new ProcessEvents($this, false));
 	}
 }
