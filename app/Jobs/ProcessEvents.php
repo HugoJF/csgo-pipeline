@@ -323,6 +323,7 @@ class ProcessEvents implements ShouldQueue
 			// If nothing was built, return false
 			if (!is_object($built)) {
 				$this->info('Event could not be processed: ' . $event);
+				$this->info('Resulting: ' . json_encode($built));
 				$this->pushToPendingPipe($event);
 
 				continue;
