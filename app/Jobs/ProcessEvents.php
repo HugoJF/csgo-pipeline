@@ -3,7 +3,12 @@
 namespace App\Jobs;
 
 use App\Contracts\FilterBase;
+use App\CsgoEvents\CvarChanged;
+use App\CsgoEvents\GameOverEvent;
+use App\CsgoEvents\IpBan;
+use App\CsgoEvents\LoadingMap;
 use App\CsgoEvents\MolotovSpawned;
+use App\CsgoEvents\PlayerAssisted;
 use App\CsgoEvents\PlayerConnected;
 use App\CsgoEvents\PlayerDamageEvent;
 use App\CsgoEvents\PlayerDisconnected;
@@ -19,11 +24,15 @@ use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEventEvent;
 use App\CsgoEvents\PlayerValidated;
 use App\CsgoEvents\RconEvent;
+use App\CsgoEvents\ServerCvarsStart;
+use App\CsgoEvents\SourcemodPluginsLoaded;
+use App\CsgoEvents\StartedMap;
 use App\CsgoEvents\StartingFreezePeriodEvent;
 use App\CsgoEvents\SuicideEvent;
 use App\CsgoEvents\SwitchTeamEvent;
 use App\CsgoEvents\TeamScoredEvent;
 use App\CsgoEvents\TeamTriggerEventEvent;
+use App\CsgoEvents\VarChanged;
 use App\CsgoEvents\WorldTriggerEventEvent;
 use App\Filter;
 use App\Line;
@@ -66,6 +75,15 @@ class ProcessEvents implements ShouldQueue
 		PlayerTeamSay::class,
 		PlayerEnteredGame::class,
 		PlayerConnected::class,
+		CvarChanged::class,
+		GameOverEvent::class,
+		IpBan::class,
+		LoadingMap::class,
+		PlayerAssisted::class,
+		ServerCvarsStart::class,
+		SourcemodPluginsLoaded::class,
+		StartedMap::class,
+		VarChanged::class,
 	];
 
 	/** @var Collection */
