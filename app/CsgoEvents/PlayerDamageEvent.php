@@ -16,9 +16,6 @@ class PlayerDamageEvent extends CsgoEvent implements \JsonSerializable
 {
 	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.+?)<(\d*)><(STEAM_\d:\d:\d+?)><(.+?)>\"\s\[(-?\d+?)\s(-?\d+?)\s(-?\d+?)\]\sattacked\s\"(.+?)<(\d+?)><(STEAM_\d:\d:\d+?)><(.+?)>\"\s\[(-?\d+?)\s(-?\d+?)\s(-?\d+?)\]\swith\s\"(.+?)\"\s\(damage\s\"(\d+?)\"\)\s\(damage_armor\s\"(\d+?)\"\)\s\(health\s\"(\d+?)\"\)\s\(armor\s\"(\d+?)\"\)\s\(hitgroup\s\"(.+?)\"\)/i";
 
-	public $serverIp;
-	public $serverPort;
-
 	public $date;
 	public $time;
 
@@ -42,7 +39,7 @@ class PlayerDamageEvent extends CsgoEvent implements \JsonSerializable
 	public $targetArmor;
 
 	private static $params = [
-		null, 'serverIp', 'serverPort', 'date', 'time',
+		null, 'date', 'time',
 		'attackerName', 'attackerId', 'attackerSteam', 'attackerTeam', null, null, null,
 		'targetName', 'targetId', 'targetSteam', 'targetTeam', null, null, null,
 		'weapon', 'damage', 'armorDamage', 'targetHealth', 'targetArmor', 'hitgroup',
@@ -51,15 +48,15 @@ class PlayerDamageEvent extends CsgoEvent implements \JsonSerializable
 	protected function fill($matches)
 	{
 		$this->attackerPosition = [
-			'x' => intval($matches[9]),
-			'y' => intval($matches[10]),
-			'z' => intval($matches[11]),
+			'x' => intval($matches[7]),
+			'y' => intval($matches[8]),
+			'z' => intval($matches[9]),
 		];
 
 		$this->targetPosition = [
-			'x' => intval($matches[16]),
-			'y' => intval($matches[17]),
-			'z' => intval($matches[18]),
+			'x' => intval($matches[14]),
+			'y' => intval($matches[15]),
+			'z' => intval($matches[16]),
 		];
 
 		foreach (static::$params as $key => $param) {
