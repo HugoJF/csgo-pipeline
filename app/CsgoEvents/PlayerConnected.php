@@ -12,38 +12,27 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class PlayerKilledEvent extends CsgoEvent implements \JsonSerializable
+class PlayerConnected extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]\skilled\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]\swith\s\"(.*?)\"/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?|BOT)><([A-Za-z]*?)>\"\sconnected,\saddress\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
 
-	public $attackerName;
-	public $attackerId;
-	public $attackerSteam;
-	public $attackerTeam;
-	public $attackerPositionX;
-	public $attackerPositionY;
-	public $attackerPositionZ;
+	public $playerName;
+	public $playerId;
+	public $playerSteamId;
+	public $playerTeam;
 
-	public $targetName;
-	public $targetId;
-	public $targetSteam;
-	public $targetTeam;
-	public $targetPositionX;
-	public $targetPositionY;
-	public $targetPositionZ;
-
-	public $weapon;
+	public $address;
 
 	private static $params = [
 		null, 'date', 'time',
-		'attackerName', 'attackerId', 'attackerSteam', 'attackerTeam',
-		'attackerPositionX', 'attackerPositionY', 'attackerPositionZ',
-		'targetName', 'targetId', 'targetSteam', 'targetTeam',
-		'targetPositionX', 'targetPositionY', 'targetPositionZ',
-		'weapon',
+		'playerName',
+		'playerId',
+		'playerSteamId',
+		'playerTeam',
+		'address',
 	];
 
 	protected function fill($matches)

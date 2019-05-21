@@ -4,14 +4,17 @@ namespace App\Jobs;
 
 use App\Contracts\FilterBase;
 use App\CsgoEvents\MolotovSpawned;
+use App\CsgoEvents\PlayerConnected;
 use App\CsgoEvents\PlayerDamageEvent;
 use App\CsgoEvents\PlayerDisconnected;
+use App\CsgoEvents\PlayerEnteredGame;
 use App\CsgoEvents\PlayerFlash;
 use App\CsgoEvents\PlayerKilledByBomb;
 use App\CsgoEvents\PlayerKilledEvent;
 use App\CsgoEvents\PlayerKilledProp;
 use App\CsgoEvents\PlayerLeftBuyZone;
 use App\CsgoEvents\PlayerSay;
+use App\CsgoEvents\PlayerTeamSay;
 use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEventEvent;
 use App\CsgoEvents\PlayerValidated;
@@ -60,6 +63,9 @@ class ProcessEvents implements ShouldQueue
 		PlayerFlash::class,
 		PlayerKilledProp::class,
 		PlayerLeftBuyZone::class,
+		PlayerTeamSay::class,
+		PlayerEnteredGame::class,
+		PlayerConnected::class,
 	];
 
 	/** @var Collection */
