@@ -10,6 +10,7 @@ use App\CsgoEvents\PlayerFlash;
 use App\CsgoEvents\PlayerKilledByBomb;
 use App\CsgoEvents\PlayerKilledEvent;
 use App\CsgoEvents\PlayerKilledProp;
+use App\CsgoEvents\PlayerLeftBuyZone;
 use App\CsgoEvents\PlayerSay;
 use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEventEvent;
@@ -58,6 +59,7 @@ class ProcessEvents implements ShouldQueue
 		MolotovSpawned::class,
 		PlayerFlash::class,
 		PlayerKilledProp::class,
+		PlayerLeftBuyZone::class,
 	];
 
 	/** @var Collection */
