@@ -316,16 +316,14 @@ class ProcessEvents implements ShouldQueue
 		if ($this->isEventFiltered($event))
 			return false;
 
+		$built = false;
+
 		// Attempt to process it
 		foreach ($this->events as $csgoEvent) {
 			$built = $csgoEvent::build($event);
 
 			// If nothing was built, return false
-			if (!is_object($built) || !$built) {
-				$this->info('Event could not be processed: ~' . $event . '~');
-				$this->info('Resulting: ' . json_encode($built));
-				$this->pushToPendingPipe($event);
-
+			if (!is_object($built)) {
 				continue;
 			}
 
@@ -346,6 +344,10 @@ class ProcessEvents implements ShouldQueue
 			// Return built event
 			return $built;
 		}
+
+		$this->info('Event could not be processed: ~' . $event . '~');
+		$this->info('Resulting: ' . json_encode($built));
+		$this->pushToPendingPipe($event);
 
 		return false;
 	}
