@@ -4,6 +4,16 @@ namespace App\Jobs;
 
 use App\Contracts\FilterBase;
 use App\CsgoEvents\PlayerDamageEvent;
+use App\CsgoEvents\PlayerDisconnected;
+use App\CsgoEvents\PlayerSay;
+use App\CsgoEvents\PlayerTriggerEventEvent;
+use App\CsgoEvents\RconEvent;
+use App\CsgoEvents\StartingFreezePeriodEvent;
+use App\CsgoEvents\SuicideEvent;
+use App\CsgoEvents\SwitchTeamEvent;
+use App\CsgoEvents\TeamScoredEvent;
+use App\CsgoEvents\TeamTriggerEventEvent;
+use App\CsgoEvents\WorldTriggerEventEvent;
 use App\Filter;
 use App\Line;
 use App\Pipe;
@@ -24,6 +34,16 @@ class ProcessEvents implements ShouldQueue
 
 	protected $events = [
 		PlayerDamageEvent::class,
+		PlayerDisconnected::class,
+		PlayerSay::class,
+		PlayerTriggerEventEvent::class,
+		RconEvent::class,
+		StartingFreezePeriodEvent::class,
+		SuicideEvent::class,
+		SwitchTeamEvent::class,
+		TeamScoredEvent::class,
+		TeamTriggerEventEvent::class,
+		WorldTriggerEventEvent::class,
 	];
 
 	/** @var Collection */
