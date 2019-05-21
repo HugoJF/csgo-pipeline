@@ -14,7 +14,7 @@ use App\User;
 
 class RconEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\srcon\sfrom\s\"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})\":\scommand\s\"(.*?)\"/i";
+	private const PATTERN = "(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\srcon\sfrom\s\"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})\":\scommand\s\"(.*?)\"";
 
 	public $date;
 	public $time;
