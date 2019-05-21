@@ -5,8 +5,11 @@ namespace App\Jobs;
 use App\Contracts\FilterBase;
 use App\CsgoEvents\CvarChanged;
 use App\CsgoEvents\GameOverEvent;
+use App\CsgoEvents\IdBan;
 use App\CsgoEvents\IpBan;
 use App\CsgoEvents\LoadingMap;
+use App\CsgoEvents\LogFileClosed;
+use App\CsgoEvents\LogFileOpened;
 use App\CsgoEvents\MolotovSpawned;
 use App\CsgoEvents\PlayerAssisted;
 use App\CsgoEvents\PlayerConnected;
@@ -14,16 +17,19 @@ use App\CsgoEvents\PlayerDamageEvent;
 use App\CsgoEvents\PlayerDisconnected;
 use App\CsgoEvents\PlayerEnteredGame;
 use App\CsgoEvents\PlayerFlash;
+use App\CsgoEvents\PlayerFlashAssisted;
 use App\CsgoEvents\PlayerKilledByBomb;
 use App\CsgoEvents\PlayerKilledEvent;
 use App\CsgoEvents\PlayerKilledProp;
 use App\CsgoEvents\PlayerLeftBuyZone;
+use App\CsgoEvents\PlayerNameChange;
 use App\CsgoEvents\PlayerSay;
 use App\CsgoEvents\PlayerTeamSay;
 use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEventEvent;
 use App\CsgoEvents\PlayerValidated;
 use App\CsgoEvents\RconEvent;
+use App\CsgoEvents\ServerCvarsEnd;
 use App\CsgoEvents\ServerCvarsStart;
 use App\CsgoEvents\SourcemodPluginsLoaded;
 use App\CsgoEvents\StartedMap;
@@ -84,6 +90,12 @@ class ProcessEvents implements ShouldQueue
 		SourcemodPluginsLoaded::class,
 		StartedMap::class,
 		VarChanged::class,
+		IdBan::class,
+		LogFileClosed::class,
+		LogFileOpened::class,
+		PlayerFlashAssisted::class,
+		PlayerNameChange::class,
+		ServerCvarsEnd::class,
 	];
 
 	/** @var Collection */
