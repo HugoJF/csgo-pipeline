@@ -5,8 +5,12 @@ namespace App\Jobs;
 use App\Contracts\FilterBase;
 use App\CsgoEvents\PlayerDamageEvent;
 use App\CsgoEvents\PlayerDisconnected;
+use App\CsgoEvents\PlayerKilledByBomb;
+use App\CsgoEvents\PlayerKilledEvent;
 use App\CsgoEvents\PlayerSay;
+use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEventEvent;
+use App\CsgoEvents\PlayerValidated;
 use App\CsgoEvents\RconEvent;
 use App\CsgoEvents\StartingFreezePeriodEvent;
 use App\CsgoEvents\SuicideEvent;
@@ -44,6 +48,10 @@ class ProcessEvents implements ShouldQueue
 		TeamScoredEvent::class,
 		TeamTriggerEventEvent::class,
 		WorldTriggerEventEvent::class,
+		PlayerValidated::class,
+		PlayerThrewGrenade::class,
+		PlayerKilledByBomb::class,
+		PlayerKilledEvent::class,
 	];
 
 	/** @var Collection */

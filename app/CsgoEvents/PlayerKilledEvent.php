@@ -12,53 +12,42 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class PlayerDamageEvent extends CsgoEvent implements \JsonSerializable
+class PlayerKilledEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.+?)<(\d*)><(STEAM_\d:\d:\d+?)><(.+?)>\"\s\[(-?\d+?)\s(-?\d+?)\s(-?\d+?)\]\sattacked\s\"(.+?)<(\d+?)><(STEAM_\d:\d:\d+?)><(.+?)>\"\s\[(-?\d+?)\s(-?\d+?)\s(-?\d+?)\]\swith\s\"(.+?)\"\s\(damage\s\"(\d+?)\"\)\s\(damage_armor\s\"(\d+?)\"\)\s\(health\s\"(\d+?)\"\)\s\(armor\s\"(\d+?)\"\)\s\(hitgroup\s\"(.+?)\"\)/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]\skilled\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]\swith\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
 
 	public $attackerName;
+	public $attackerId;
 	public $attackerSteam;
 	public $attackerTeam;
-	public $attackerId;
-	public $attackerPosition;
-	public $weapon;
-
-	public $damage;
-	public $armorDamage;
-	public $hitgroup;
+	public $attackerPositionX;
+	public $attackerPositionY;
+	public $attackerPositionZ;
 
 	public $targetName;
 	public $targetId;
 	public $targetSteam;
 	public $targetTeam;
-	public $targetPosition;
-	public $targetHealth;
-	public $targetArmor;
+	public $targetPositionX;
+	public $targetPositionY;
+	public $targetPositionZ;
+
+	public $weapon;
 
 	private static $params = [
 		null, 'date', 'time',
-		'attackerName', 'attackerId', 'attackerSteam', 'attackerTeam', null, null, null,
-		'targetName', 'targetId', 'targetSteam', 'targetTeam', null, null, null,
-		'weapon', 'damage', 'armorDamage', 'targetHealth', 'targetArmor', 'hitgroup',
+		'attackerName', 'attackerId', 'attackerSteam', 'attackerTeam',
+		'attackerPositionX', 'attackerPositionY', 'attackerPositionZ',
+		'targetName', 'targetId', 'targetSteam', 'targetTeam',
+		'targetPositionX', 'targetPositionY', 'targetPositionZ',
+		'weapon',
 	];
 
 	protected function fill($matches)
 	{
-		$this->attackerPosition = [
-			'x' => intval($matches[7]),
-			'y' => intval($matches[8]),
-			'z' => intval($matches[9]),
-		];
-
-		$this->targetPosition = [
-			'x' => intval($matches[14]),
-			'y' => intval($matches[15]),
-			'z' => intval($matches[16]),
-		];
-
 		foreach (static::$params as $key => $param) {
 			if ($param !== null) {
 				$this->$param = $matches[ $key ];
