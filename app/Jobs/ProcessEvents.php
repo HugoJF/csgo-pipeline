@@ -108,13 +108,13 @@ class ProcessEvents implements ShouldQueue
 		// Computes redistributed reserves per server
 		$adjustedReserves = $this->calculateEventsPerServer();
 
-//		$adjustedReserves->transform(function ($item) {
-//			unset($item['server']);
-//
-//			return $item;
-//		});
-//
-//		dd($adjustedReserves);
+		//		$adjustedReserves->transform(function ($item) {
+		//			unset($item['server']);
+		//
+		//			return $item;
+		//		});
+		//
+		//		dd($adjustedReserves);
 
 		foreach ($adjustedReserves as $data) {
 			// Start start time
@@ -153,6 +153,9 @@ class ProcessEvents implements ShouldQueue
 	protected function eventsPerPriority(Collection $servers)
 	{
 		$totalPriority = $this->totalPriority($servers);
+
+		if ($totalPriority === 0)
+			return 0;
 
 		return $this->eventPerJob / $totalPriority;
 	}
