@@ -14,7 +14,7 @@ use App\User;
 
 class PlayerDisconnected extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\sdisconnected\s\(reason\s\"(.*?)\"\)";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\sdisconnected\s\(reason\s\"(.*?)\"\)/i";
 
 	public $date;
 	public $time;

@@ -14,7 +14,7 @@ use App\User;
 
 class StartingFreezePeriodEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sStarting\sFreeze\speriod";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sStarting\sFreeze\speriod/i";
 
 	public $date;
 	public $time;

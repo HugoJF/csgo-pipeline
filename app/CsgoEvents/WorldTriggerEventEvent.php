@@ -14,7 +14,7 @@ use App\User;
 
 class WorldTriggerEventEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sWorld\striggered\s\"(.*?)\"";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sWorld\striggered\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
