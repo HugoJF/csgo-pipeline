@@ -255,6 +255,8 @@ class ProcessEvents implements ShouldQueue
 		$llen = Redis::command('llen', [$key]);
 		$eventCount = min($llen, $eventCount);
 
+		$server->increment('events', $eventCount);
+
 		for ($i = 0; $i < $eventCount; $i++) {
 			$raw = Redis::command('lpop', [$key]);
 
