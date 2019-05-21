@@ -14,7 +14,7 @@ use App\User;
 
 class TeamScoredEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sTeam\s\"(.*?)\"\striggered\s\"(.*?)\"\s\((.*?)\s\"(\d{1,4})\"\)\s\((.*?)\s\"(\d{1,4})\"\)/i";
+	private const PATTERN = "(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sTeam\s\"([A-Za-z]*?)\"\sscored\s\"(\d{1,5})\"\swith\s\"(\d{1,5})\"\splayers";
 
 	public $date;
 	public $time;
