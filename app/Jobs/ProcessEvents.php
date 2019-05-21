@@ -226,6 +226,10 @@ class ProcessEvents implements ShouldQueue
 		$availablePriority = $totalPriority - $totalRealPriority;
 		$this->info("Available priority: $availablePriority");
 
+		// Fix possible division by 0
+		if ($totalOverReservePriority === 0)
+			$totalOverReservePriority = 1;
+
 		// Calculate how much priority each over reserve server will receive (based on it's base priority)
 		$extraPriorityPerPriority = $availablePriority / $totalOverReservePriority;
 		$this->info("Extra priority per server: $extraPriorityPerPriority");
