@@ -24,15 +24,12 @@ class PlayerValidated extends CsgoEvent implements \JsonSerializable
 	public $playerSteamId;
 	public $playerTeam;
 
-	public $team;
-
 	private static $params = [
 		null, 'date', 'time',
 		'playerName',
 		'playerId',
 		'playerSteamId',
 		'playerTeam',
-		'team',
 	];
 
 	protected function fill($matches)
