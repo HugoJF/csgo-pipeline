@@ -321,8 +321,8 @@ class ProcessEvents implements ShouldQueue
 			$built = $csgoEvent::build($event);
 
 			// If nothing was built, return false
-			if (!is_object($built)) {
-				$this->info('Event could not be processed: ' . $event);
+			if (!is_object($built) || !$built) {
+				$this->info('Event could not be processed: ~' . $event . '~');
 				$this->info('Resulting: ' . json_encode($built));
 				$this->pushToPendingPipe($event);
 
