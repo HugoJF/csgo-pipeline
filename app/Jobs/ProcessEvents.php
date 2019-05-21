@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Contracts\FilterBase;
 use App\CsgoEvents\CvarChanged;
-use App\CsgoEvents\GameOverEvent;
+use App\CsgoEvents\GameOver;
 use App\CsgoEvents\IdBan;
 use App\CsgoEvents\IpBan;
 use App\CsgoEvents\LoadingMap;
@@ -13,33 +13,33 @@ use App\CsgoEvents\LogFileOpened;
 use App\CsgoEvents\MolotovSpawned;
 use App\CsgoEvents\PlayerAssisted;
 use App\CsgoEvents\PlayerConnected;
-use App\CsgoEvents\PlayerDamageEvent;
+use App\CsgoEvents\PlayerDamage;
 use App\CsgoEvents\PlayerDisconnected;
 use App\CsgoEvents\PlayerEnteredGame;
 use App\CsgoEvents\PlayerFlash;
 use App\CsgoEvents\PlayerFlashAssisted;
 use App\CsgoEvents\PlayerKilledByBomb;
-use App\CsgoEvents\PlayerKilledEvent;
+use App\CsgoEvents\PlayerKilled;
 use App\CsgoEvents\PlayerKilledProp;
 use App\CsgoEvents\PlayerLeftBuyZone;
 use App\CsgoEvents\PlayerNameChange;
 use App\CsgoEvents\PlayerSay;
 use App\CsgoEvents\PlayerTeamSay;
 use App\CsgoEvents\PlayerThrewGrenade;
-use App\CsgoEvents\PlayerTriggerEventEvent;
+use App\CsgoEvents\PlayerTriggerEvent;
 use App\CsgoEvents\PlayerValidated;
 use App\CsgoEvents\RconEvent;
 use App\CsgoEvents\ServerCvarsEnd;
 use App\CsgoEvents\ServerCvarsStart;
 use App\CsgoEvents\SourcemodPluginsLoaded;
 use App\CsgoEvents\StartedMap;
-use App\CsgoEvents\StartingFreezePeriodEvent;
+use App\CsgoEvents\StartingFreezePeriod;
 use App\CsgoEvents\SuicideEvent;
-use App\CsgoEvents\SwitchTeamEvent;
-use App\CsgoEvents\TeamScoredEvent;
-use App\CsgoEvents\TeamTriggerEventEvent;
+use App\CsgoEvents\SwitchTeam;
+use App\CsgoEvents\TeamScored;
+use App\CsgoEvents\TeamTriggerEvent;
 use App\CsgoEvents\VarChanged;
-use App\CsgoEvents\WorldTriggerEventEvent;
+use App\CsgoEvents\WorldTriggerEvent;
 use App\Filter;
 use App\Line;
 use App\Pipe;
@@ -59,21 +59,21 @@ class ProcessEvents implements ShouldQueue
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	protected $events = [
-		PlayerDamageEvent::class,
+		PlayerDamage::class,
 		PlayerDisconnected::class,
 		PlayerSay::class,
-		PlayerTriggerEventEvent::class,
+		PlayerTriggerEvent::class,
 		RconEvent::class,
-		StartingFreezePeriodEvent::class,
+		StartingFreezePeriod::class,
 		SuicideEvent::class,
-		SwitchTeamEvent::class,
-		TeamScoredEvent::class,
-		TeamTriggerEventEvent::class,
-		WorldTriggerEventEvent::class,
+		SwitchTeam::class,
+		TeamScored::class,
+		TeamTriggerEvent::class,
+		WorldTriggerEvent::class,
 		PlayerValidated::class,
 		PlayerThrewGrenade::class,
 		PlayerKilledByBomb::class,
-		PlayerKilledEvent::class,
+		PlayerKilled::class,
 		MolotovSpawned::class,
 		PlayerFlash::class,
 		PlayerKilledProp::class,
@@ -82,7 +82,7 @@ class ProcessEvents implements ShouldQueue
 		PlayerEnteredGame::class,
 		PlayerConnected::class,
 		CvarChanged::class,
-		GameOverEvent::class,
+		GameOver::class,
 		IpBan::class,
 		LoadingMap::class,
 		PlayerAssisted::class,

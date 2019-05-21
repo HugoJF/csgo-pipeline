@@ -12,7 +12,7 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class StartingFreezePeriodEvent extends CsgoEvent implements \JsonSerializable
+class StartingFreezePeriod extends CsgoEvent implements \JsonSerializable
 {
 	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sStarting\sFreeze\speriod/i";
 

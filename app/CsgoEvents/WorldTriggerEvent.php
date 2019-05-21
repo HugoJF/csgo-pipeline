@@ -12,26 +12,18 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class SwitchTeamEvent extends CsgoEvent implements \JsonSerializable
+class WorldTriggerEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)>\"\sswitched\sfrom\steam\s<([A-Za-z]*?)>\sto\s<([A-Za-z]*?)>/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sWorld\striggered\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
 
-	public $playerName;
-	public $playerId;
-	public $playerSteamId;
-	public $fromTeam;
-	public $toTeam;
+	public $event;
 
 	private static $params = [
 		null, 'date', 'time',
-		'playerName',
-		'playerId',
-		'playerSteamId',
-		'fromTeam',
-		'toTeam',
+		'event',
 	];
 
 	protected function fill($matches)

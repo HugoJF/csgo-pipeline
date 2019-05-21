@@ -12,18 +12,26 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class WorldTriggerEventEvent extends CsgoEvent implements \JsonSerializable
+class GameOver extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sWorld\striggered\s\"(.*?)\"/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sGame\sOver\: (.*?)\s\s(.*?)\sscore\s(\d*?):(\d*?)\safter\s(\d*?)\smin/i";
 
 	public $date;
 	public $time;
 
-	public $event;
+	public $type;
+	public $map;
+	public $teamAScore;
+	public $teamBScore;
+	public $duration;
 
 	private static $params = [
 		null, 'date', 'time',
-		'event',
+		'type',
+		'map',
+		'teamAScore',
+		'teamBScore',
+		'duration',
 	];
 
 	protected function fill($matches)
