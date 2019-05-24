@@ -401,6 +401,11 @@ class ProcessEvents implements ShouldQueue
 
 		// Attempt to process it
 		foreach ($this->events as $csgoEvent) {
+			// Avoid empty events
+			if (empty($event))
+				return false;
+
+			// Attempt to build event
 			$built = $csgoEvent::build($event);
 
 			// If nothing was built, return false
