@@ -12,14 +12,17 @@ use App\Classes\CsgoEvent;
 use App\Classes\SteamID;
 use App\User;
 
-class ServerCvarsEnd extends CsgoEvent implements \JsonSerializable
+class ServerMessage extends CsgoEvent
 {
-	protected const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\sserver\scvars\send/i";
+	protected const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}): server_message:\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
 
+	public $message;
+
 	protected static $params = [
 		null, 'date', 'time',
+		'message',
 	];
 }

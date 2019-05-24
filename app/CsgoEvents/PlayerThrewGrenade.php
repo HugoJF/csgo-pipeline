@@ -14,7 +14,7 @@ use App\User;
 
 class PlayerThrewGrenade extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?|BOT)><([A-Za-z]*?)>\"\sthrew\s(.*?)\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]/i";
+	protected const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?|BOT)><([A-Za-z]*?)>\"\sthrew\s(.*?)\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]/i";
 
 	public $date;
 	public $time;
@@ -31,7 +31,7 @@ class PlayerThrewGrenade extends CsgoEvent implements \JsonSerializable
 	public $playerZ;
 
 
-	private static $params = [
+	protected static $params = [
 		null, 'date', 'time',
 		'playerName',
 		'playerId',
@@ -42,47 +42,4 @@ class PlayerThrewGrenade extends CsgoEvent implements \JsonSerializable
 		'playerY',
 		'playerZ',
 	];
-
-	protected function fill($matches)
-	{
-		foreach (static::$params as $key => $param) {
-			if ($param !== null) {
-				$this->$param = $matches[ $key ];
-			}
-		}
-	}
-
-	public static function build($raw)
-	{
-		if (preg_match(static::PATTERN, $raw, $matches)) {
-			$event = new static();
-
-			$event->fill($matches);
-
-			return $event;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Specify data which should be serialized to JSON
-	 *
-	 * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 */
-	public function jsonSerialize()
-	{
-		$serialization = [];
-
-		foreach (static::$params as $key => $param) {
-			if ($param !== null) {
-				$serialization[ $param ] = $this->$param;
-			}
-		}
-
-		return $serialization;
-	}
 }
