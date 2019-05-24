@@ -23,6 +23,7 @@ use App\CsgoEvents\PlayerKilled;
 use App\CsgoEvents\PlayerKilledProp;
 use App\CsgoEvents\PlayerLeftBuyZone;
 use App\CsgoEvents\PlayerNameChange;
+use App\CsgoEvents\PlayerPurchase;
 use App\CsgoEvents\PlayerSay;
 use App\CsgoEvents\PlayerTeamSay;
 use App\CsgoEvents\PlayerThrewGrenade;
@@ -96,6 +97,7 @@ class ProcessEvents implements ShouldQueue
 		PlayerFlashAssisted::class,
 		PlayerNameChange::class,
 		ServerCvarsEnd::class,
+		PlayerPurchase::class,
 	];
 
 	/** @var Collection */
@@ -117,7 +119,7 @@ class ProcessEvents implements ShouldQueue
 	protected $command;
 
 	/** @var integer */
-	private $eventPerJob;
+	private $eventsPerJob;
 
 	/** @var bool */
 	private $verbose;
@@ -149,7 +151,7 @@ class ProcessEvents implements ShouldQueue
 
 	public function boot()
 	{
-		$this->eventPerJob = config('pipeline.events_per_job', 1000);
+		$this->eventsPerJob = config('pipeline.events_per_job', 1000);
 		$this->filtersModel = Filter::orderby('count', 'DESC')->get();
 
 		$this->pipes = Pipe::all();
@@ -207,12 +209,19 @@ class ProcessEvents implements ShouldQueue
 			$this->info("Processed {$reserve} in {$d} seconds from server {$server->ip}:{$server->port}.");
 		}
 
+		$remainder = $adjustedReserves->reduce(function ($acc, $reserve) {
+			return $acc - $reserve['adjustedReserve'];
+		}, $this->eventsPerJob);
+
+		$this->info("Processing $remainder events from pending pipe");
+		$this->processKey($this->pendingPipe, $remainder);
+
 		// Store job end time
 		$end = microtime(true);
 
 		// Debug
 		$duration = round($end - $start, 3);
-		$this->info("Processing of {$this->eventPerJob} events took: {$duration} seconds");
+		$this->info("Processing of {$this->eventsPerJob} events took: {$duration} seconds");
 	}
 
 	protected function totalPriority(Collection $servers)
@@ -229,7 +238,7 @@ class ProcessEvents implements ShouldQueue
 		if ($totalPriority === 0)
 			return 0;
 
-		return $this->eventPerJob / $totalPriority;
+		return $this->eventsPerJob / $totalPriority;
 	}
 
 	protected function serverKey(Server $server)
@@ -328,10 +337,16 @@ class ProcessEvents implements ShouldQueue
 	protected function processServer(Server $server, $eventCount)
 	{
 		$key = $this->serverKey($server);
-		$llen = Redis::command('llen', [$key]);
-		$eventCount = min($llen, $eventCount);
 
 		$server->increment('events', $eventCount);
+
+		$this->processKey($key, $eventCount);
+	}
+
+	protected function processKey($key, $eventCount)
+	{
+		$llen = Redis::command('llen', [$key]);
+		$eventCount = min($llen, $eventCount);
 
 		for ($i = 0; $i < $eventCount; $i++) {
 			$raw = Redis::command('lpop', [$key]);
