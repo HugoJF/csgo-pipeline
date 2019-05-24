@@ -37,6 +37,7 @@ use App\CsgoEvents\RconEvent;
 use App\CsgoEvents\ServerCvarsEnd;
 use App\CsgoEvents\ServerCvarsStart;
 use App\CsgoEvents\ServerIsOutOfDate;
+use App\CsgoEvents\ServerMessage;
 use App\CsgoEvents\SourcemodPluginsLoaded;
 use App\CsgoEvents\StartedMap;
 use App\CsgoEvents\StartingFreezePeriod;
@@ -110,6 +111,7 @@ class ProcessEvents implements ShouldQueue
 		RconBadPassword::class,
 		ServerIsOutOfDate::class,
 		TeamName::class,
+		ServerMessage::class,
 	];
 
 	/** @var Collection */
