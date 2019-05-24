@@ -14,7 +14,7 @@ use App\User;
 
 class PlayerTriggerEvent extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,6})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*)>\"\striggered\s\"(.*?)\"/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,6})><(STEAM_[01]:[01]:\d*?|BOT)><([A-Za-z]*)>\"\striggered\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;

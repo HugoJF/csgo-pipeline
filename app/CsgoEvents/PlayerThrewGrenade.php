@@ -14,7 +14,7 @@ use App\User;
 
 class PlayerThrewGrenade extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\sthrew\s(.*?)\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?|BOT)><([A-Za-z]*?)>\"\sthrew\s(.*?)\s\[(-?\d{1,6})\s(-?\d{1,6})\s(-?\d{1,6})\]/i";
 
 	public $date;
 	public $time;

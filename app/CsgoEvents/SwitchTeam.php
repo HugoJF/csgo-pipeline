@@ -14,7 +14,7 @@ use App\User;
 
 class SwitchTeam extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)>\"\sswitched\sfrom\steam\s<([A-Za-z]*?)>\sto\s<([A-Za-z]*?)>/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}):\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?|BOT)>\"\sswitched\sfrom\steam\s<([A-Za-z]*?)>\sto\s<([A-Za-z]*?)>/i";
 
 	public $date;
 	public $time;
