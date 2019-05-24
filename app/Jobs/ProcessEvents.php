@@ -213,7 +213,7 @@ class ProcessEvents implements ShouldQueue
 			return $acc + $reserve['adjustedReserve'];
 		}, 0);
 
-		$remainder = round($remainder - $this->eventsPerJob);
+		$remainder = round($this->eventsPerJob - $remainder);
 
 		$this->info("Processing $remainder events from pending pipe");
 		$this->processKey($this->pendingPipe, $remainder);
