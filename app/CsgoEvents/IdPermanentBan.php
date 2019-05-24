@@ -22,13 +22,12 @@ class IdPermanentBan extends CsgoEvent implements \JsonSerializable
 	public $assisterId;
 	public $assisterSteam;
 	public $assisterTeam;
-	public $duration;
 	public $issuer;
 
 	private static $params = [
 		null, 'date', 'time',
 		'assisterId', 'assisterSteam', 'assisterTeam',
-		'duration', 'issuer',
+		'issuer',
 	];
 
 	protected function fill($matches)
