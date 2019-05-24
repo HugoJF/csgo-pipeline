@@ -3,9 +3,12 @@
 namespace App\Jobs;
 
 use App\Contracts\FilterBase;
+use App\CsgoEvents\ConsoleSay;
 use App\CsgoEvents\CvarChanged;
+use App\CsgoEvents\FailureCode;
 use App\CsgoEvents\GameOver;
 use App\CsgoEvents\IdBan;
+use App\CsgoEvents\IdPermanentBan;
 use App\CsgoEvents\IpBan;
 use App\CsgoEvents\LoadingMap;
 use App\CsgoEvents\LogFileClosed;
@@ -29,14 +32,17 @@ use App\CsgoEvents\PlayerTeamSay;
 use App\CsgoEvents\PlayerThrewGrenade;
 use App\CsgoEvents\PlayerTriggerEvent;
 use App\CsgoEvents\PlayerValidated;
+use App\CsgoEvents\RconBadPassword;
 use App\CsgoEvents\RconEvent;
 use App\CsgoEvents\ServerCvarsEnd;
 use App\CsgoEvents\ServerCvarsStart;
+use App\CsgoEvents\ServerIsOutOfDate;
 use App\CsgoEvents\SourcemodPluginsLoaded;
 use App\CsgoEvents\StartedMap;
 use App\CsgoEvents\StartingFreezePeriod;
 use App\CsgoEvents\SuicideEvent;
 use App\CsgoEvents\SwitchTeam;
+use App\CsgoEvents\TeamName;
 use App\CsgoEvents\TeamScored;
 use App\CsgoEvents\TeamTriggerEvent;
 use App\CsgoEvents\VarChanged;
@@ -98,6 +104,12 @@ class ProcessEvents implements ShouldQueue
 		PlayerNameChange::class,
 		ServerCvarsEnd::class,
 		PlayerPurchase::class,
+		ConsoleSay::class,
+		FailureCode::class,
+		IdPermanentBan::class,
+		RconBadPassword::class,
+		ServerIsOutOfDate::class,
+		TeamName::class,
 	];
 
 	/** @var Collection */
