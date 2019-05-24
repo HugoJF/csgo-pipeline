@@ -20,12 +20,10 @@ class RconBadPassword extends CsgoEvent implements \JsonSerializable
 	public $time;
 
 	public $ip;
-	public $command;
 
 	private static $params = [
 		null, 'date', 'time',
 		'ip',
-		'command',
 	];
 
 	protected function fill($matches)

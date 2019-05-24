@@ -14,20 +14,21 @@ use App\User;
 
 class IdBan extends CsgoEvent implements \JsonSerializable
 {
-	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}): Banid:\s\"<(.*?)><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\swas\sbanned\s\"for\s([\d\.]*?)\sminutes\"\sby\s\"(.*?)\"/i";
+	private const PATTERN = "/(\d{1,2}\/\d{1,2}\/\d{1,4})\s-\s(\d{1,2}:\d{1,2}:\d{1,2}): Banid:\s\"(.*?)<(\d{1,5})><(STEAM_[01]:[01]:\d*?)><([A-Za-z]*?)>\"\swas\sbanned\s\"for\s([\d\.]*?)\sminutes\"\sby\s\"(.*?)\"/i";
 
 	public $date;
 	public $time;
 
-	public $assisterId;
-	public $assisterSteam;
-	public $assisterTeam;
+	public $playerName;
+	public $playerId;
+	public $playerSteam;
+	public $playerTeam;
 	public $duration;
 	public $issuer;
 
 	private static $params = [
 		null, 'date', 'time',
-		'assisterId', 'assisterSteam', 'assisterTeam',
+		'playerName', 'playerId', 'playerSteam', 'playerTeam',
 		'duration', 'issuer',
 	];
 
