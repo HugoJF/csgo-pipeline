@@ -24,8 +24,6 @@ class PlayerKilledByBomb extends CsgoEvent implements \JsonSerializable
 	public $playerSteamId;
 	public $playerTeam;
 
-	public $grenade;
-
 	public $playerX;
 	public $playerY;
 	public $playerZ;
@@ -37,7 +35,6 @@ class PlayerKilledByBomb extends CsgoEvent implements \JsonSerializable
 		'playerId',
 		'playerSteamId',
 		'playerTeam',
-		'grenade',
 		'playerX',
 		'playerY',
 		'playerZ',
