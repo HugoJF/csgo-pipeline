@@ -1,0 +1,9 @@
+<div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-2">Pipes</h6>
+    @foreach ($pipes as $pipe)
+        @include('pipes.pipe', ['pipe' => $pipe])
+    @endforeach
+    <small class="border-top border-gray pt-2 d-block text-right mt-3">
+        <a href="#">Show all</a>
+    </small>
+</div>

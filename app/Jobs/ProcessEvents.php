@@ -66,7 +66,7 @@ class ProcessEvents implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	protected $events = [
+	public static $events = [
 		PlayerDamage::class,
 		PlayerDisconnected::class,
 		PlayerSay::class,

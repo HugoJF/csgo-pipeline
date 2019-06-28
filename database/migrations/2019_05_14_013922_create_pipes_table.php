@@ -16,9 +16,13 @@ class CreatePipesTable extends Migration
 		Schema::create('pipes', function (Blueprint $table) {
 			$table->bigIncrements('id');
 
+			$table->boolean('active');
+
 			$table->string('key');
 			$table->unsignedInteger('limit');
 			$table->boolean('pop_on_limit')->default(false);
+
+			$table->text('description');
 
 			$table->timestamps();
 		});
