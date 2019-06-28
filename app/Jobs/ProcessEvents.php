@@ -402,7 +402,7 @@ class ProcessEvents implements ShouldQueue
 		$built = false;
 
 		// Attempt to process it
-		foreach ($this->events as $csgoEvent) {
+		foreach (self::$events as $csgoEvent) {
 			// Avoid empty events
 			if (empty($event))
 				return false;
