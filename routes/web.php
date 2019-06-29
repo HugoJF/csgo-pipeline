@@ -21,7 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::prefix('pipes')->name('pipes.')->group(function () {
 	Route::get('create', 'PipeController@create')->name('create');
-	Route::get('by-key/{key}', 'PipeController@viewByKey')->name('view');
+	Route::get('by-key/{key}', 'PipeController@viewByKey')->name('view-by-key');
 	Route::get('{pipe}', 'PipeController@view')->name('view');
 	Route::get('{pipe}/edit', 'PipeController@edit')->name('edit');
 

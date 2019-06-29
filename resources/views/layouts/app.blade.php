@@ -42,6 +42,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('servers.create') }}">Create server</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pipes.view-by-key', 'pending') }}">Pending events</a>
+                    </li>
                 </ul>
                 
                 <!-- Right Side Of Navbar -->
