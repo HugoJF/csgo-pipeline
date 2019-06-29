@@ -75,6 +75,8 @@ class ServerController extends Controller
 	{
 		$server->delete();
 
+		Redis::command('ltrim', [$server->key, -1, 0]);
+
 		flash()->success("Server <strong>$server->ip:$server->port</strong> was deleted!");
 
 		return redirect()->route('home');

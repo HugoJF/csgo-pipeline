@@ -79,6 +79,8 @@ class PipeController extends Controller
 	{
 		$pipe->delete();
 
+		Redis::command('ltrim', [$pipe->key, -1, 0]);
+
 		flash()->success("Pipe <strong>#{$pipe->key}</strong> was deleted!");
 
 		return redirect()->route('home');
