@@ -19,8 +19,8 @@ class CreateServersTable extends Migration
             $table->string('ip');
             $table->unsignedInteger('port');
 
-            $table->unsignedInteger('priority');
-            $table->unsignedInteger('events');
+            $table->unsignedInteger('priority')->default(10);
+            $table->unsignedInteger('events')->default(0);
 
             $table->timestamps();
         });

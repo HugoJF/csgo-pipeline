@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Pipe extends Model
 {
@@ -11,5 +12,10 @@ class Pipe extends Model
 	public function lines()
 	{
 		return $this->hasMany(Line::class);
+	}
+
+	public function getPendingEventsAttribute()
+	{
+		return Redis::command('llen', [$this->key]);
 	}
 }

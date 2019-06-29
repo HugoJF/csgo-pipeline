@@ -5,10 +5,23 @@ namespace App\Http\Controllers;
 use App\Forms\PipeForm;
 use App\Pipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Kris\LaravelFormBuilder\FormBuilder;
 
 class PipeController extends Controller
 {
+	public function view(Pipe $pipe)
+	{
+		return $this->viewByKey($pipe->key);
+	}
+
+	public function viewByKey($key)
+	{
+		$data = Redis::command('lrange', [$key, 0, -1]);
+
+		return view('pipes.view', compact('key', 'data'));
+	}
+
 	public function create(FormBuilder $formBuilder)
 	{
 		$form = $formBuilder->create(PipeForm::class, [

@@ -20,8 +20,10 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::prefix('pipes')->name('pipes.')->group(function () {
-	Route::get('create', 'PipeController@create')->name('create');
+	Route::get('by-key/{key}', 'PipeController@viewByKey')->name('view');
+	Route::get('{pipe}', 'PipeController@view')->name('view');
 	Route::get('{pipe}/edit', 'PipeController@edit')->name('edit');
+	Route::get('create', 'PipeController@create')->name('create');
 
 	Route::patch('{pipe}', 'PipeController@update')->name('update');
 
@@ -39,4 +41,15 @@ Route::prefix('pipes/{pipe}/lines')->name('lines.')->group(function () {
 
 Route::prefix('lines')->name('lines.')->group(function () {
 	Route::delete('{line}', 'LineController@destroy')->name('destroy');
+});
+Route::prefix('servers')->name('servers.')->group(function () {
+	Route::get('create', 'ServerController@create')->name('create');
+	Route::get('{server}', 'ServerController@view')->name('view');
+	Route::get('{server}/edit', 'ServerController@edit')->name('edit');
+
+	Route::post('/', 'ServerController@store')->name('store');
+
+	Route::patch('{server}', 'ServerController@update')->name('update');
+
+	Route::delete('{server}', 'ServerController@destroy')->name('destroy');
 });

@@ -39,6 +39,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('pipes.create') }}">Create pipe</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('servers.create') }}">Create server</a>
+                    </li>
                 </ul>
                 
                 <!-- Right Side Of Navbar -->
