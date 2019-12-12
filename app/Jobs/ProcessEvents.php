@@ -411,9 +411,8 @@ class ProcessEvents implements ShouldQueue
 			$built = $csgoEvent::build($event);
 
 			// If nothing was built, return false
-			if (!is_object($built)) {
+			if (!is_object($built))
 				continue;
-			}
 
 			// Store the class that built the event
 			$class = get_class($built);
@@ -427,7 +426,7 @@ class ProcessEvents implements ShouldQueue
 			$pipes = $this->getPipes($lines->pluck('pipe_id'));
 
 			// Push data into them
-			$this->pushDataToPipes(json_encode($built), $pipes);
+			$this->pushDataToPipes($built->jsonSerialize(), $pipes);
 
 			// Return built event
 			return $built;
@@ -465,7 +464,7 @@ class ProcessEvents implements ShouldQueue
 
 			// Only push if length is under limit or pop_on_limit is true
 			if ($llen < $pipe->limit || $pipe->pop_on_limit)
-				Redis::command('rpush', [$pipe->key, json_encode($data)]);
+				Redis::command('rpush', [$pipe->key, $data]);
 
 			// Pop oldest value if we are over limits
 			if ($llen >= $pipe->limit && $pipe->pop_on_limit)
