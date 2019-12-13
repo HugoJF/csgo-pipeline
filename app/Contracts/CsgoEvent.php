@@ -60,6 +60,9 @@ abstract class CsgoEvent implements \JsonSerializable
 				$serialization[ $param ] = $this->$param;
 		}
 
+		$serialization['server'] = $this->server;
+		$serialization['type'] = $this->type;
+
 		return $serialization;
 	}
 }
