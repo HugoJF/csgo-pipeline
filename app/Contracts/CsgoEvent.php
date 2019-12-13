@@ -18,9 +18,11 @@ abstract class CsgoEvent implements \JsonSerializable
 	public $server;
 	public $type;
 
-	protected function fill($matches)
+	protected function fill($server, $matches)
 	{
 		$this->type = class_basename(static::class);
+		$this->server = $server;
+
 		foreach (static::$params as $key => $param) {
 			if ($param !== null) {
 				$this->$param = $matches[ $key ];
@@ -33,9 +35,7 @@ abstract class CsgoEvent implements \JsonSerializable
 		if (preg_match(static::PATTERN, $raw, $matches)) {
 			$event = new static();
 
-			$data = array_merge($matches, compact('server'));
-
-			$event->fill($data);
+			$event->fill($server, $matches);
 
 			return $event;
 		} else {
