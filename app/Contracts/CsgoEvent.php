@@ -48,10 +48,9 @@ abstract class CsgoEvent implements \JsonSerializable
 	{
 		$serialization = [];
 
-		foreach (static::$params as $key => $param) {
-			if ($param !== null) {
+		foreach (static::$params as $param) {
+			if ($param !== null)
 				$serialization[ $param ] = $this->$param;
-			}
 		}
 
 		return $serialization;

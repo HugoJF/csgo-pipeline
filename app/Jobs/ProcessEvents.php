@@ -426,7 +426,7 @@ class ProcessEvents implements ShouldQueue
 			$pipes = $this->getPipes($lines->pluck('pipe_id'));
 
 			// Push data into them
-			$this->pushDataToPipes($built->jsonSerialize(), $pipes);
+			$this->pushDataToPipes(json_encode($built), $pipes);
 
 			// Return built event
 			return $built;
