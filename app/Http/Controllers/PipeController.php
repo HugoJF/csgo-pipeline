@@ -19,10 +19,6 @@ class PipeController extends Controller
 	{
 		$data = Redis::command('lrange', [$key, 0, -1]);
 
-		$data = array_map(function ($item) {
-			return json_decode($item);
-		}, $data);
-
 		return view('pipes.view', compact('key', 'data'));
 	}
 
