@@ -350,6 +350,8 @@ class ProcessEvents implements ShouldQueue
 		return $eventsPerServer;
 	}
 
+	// TODO: rename processKey to processServer to pass $server into event object (proper server IP serialization).
+	// TODO: fix pending pipes (either add one pending pipe per server or don't fully process them, just discard)
 	protected function processServer(Server $server, $eventCount)
 	{
 		$key = $this->serverKey($server);
@@ -367,7 +369,7 @@ class ProcessEvents implements ShouldQueue
 		for ($i = 0; $i < $eventCount; $i++) {
 			$raw = Redis::command('lpop', [$key]);
 
-			$res = $this->handleEvent($raw);
+			$res = $this->handleEvent($key, $raw);
 
 			if ($this->verbose)
 				$this->info(json_encode($res));
@@ -393,7 +395,7 @@ class ProcessEvents implements ShouldQueue
 	 *
 	 * @return bool
 	 */
-	protected function handleEvent($event)
+	protected function handleEvent($key, $event)
 	{
 		// Check if event should be filtered
 		if ($this->isEventFiltered($event))
@@ -408,7 +410,7 @@ class ProcessEvents implements ShouldQueue
 				return false;
 
 			// Attempt to build event
-			$built = $csgoEvent::build($event);
+			$built = $csgoEvent::build($key, $event);
 
 			// If nothing was built, return false
 			if (!is_object($built))

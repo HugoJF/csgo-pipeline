@@ -14,8 +14,13 @@ abstract class CsgoEvent implements \JsonSerializable
 
 	protected static $params = [];
 
+	// Global event parameters
+	public $server;
+	public $type;
+
 	protected function fill($matches)
 	{
+		$this->type = class_basename(static::class);
 		foreach (static::$params as $key => $param) {
 			if ($param !== null) {
 				$this->$param = $matches[ $key ];
@@ -23,12 +28,14 @@ abstract class CsgoEvent implements \JsonSerializable
 		}
 	}
 
-	public static function build($raw)
+	public static function build($server, $raw)
 	{
 		if (preg_match(static::PATTERN, $raw, $matches)) {
 			$event = new static();
 
-			$event->fill($matches);
+			$data = array_merge($matches, compact('server'));
+
+			$event->fill($data);
 
 			return $event;
 		} else {
