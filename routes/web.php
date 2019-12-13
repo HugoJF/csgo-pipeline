@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
 
 Auth::routes();
@@ -30,7 +30,6 @@ Route::prefix('pipes')->name('pipes.')->group(function () {
 	Route::post('store', 'PipeController@store')->name('store');
 
 	Route::delete('{pipe}', 'PipeController@destroy')->name('destroy');
-
 });
 
 Route::prefix('pipes/{pipe}/lines')->name('lines.')->group(function () {
