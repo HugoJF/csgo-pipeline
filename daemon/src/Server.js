@@ -147,7 +147,9 @@ class Server {
         if (err) {
             console.error(err);
         } else {
-            console.log(this.toString() + ' ' + reply);
+            let n = parseInt(reply);
+            if(isNaN(n) || !isNaN(n) && (n % 10 === 0))
+                console.log(this.toString() + ' ' + reply);
         }
     }
 
