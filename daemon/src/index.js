@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+
 dotenv.config({path: __dirname + '/.env'});
 import request from 'request';
 import Server from "./Server";
@@ -35,9 +36,10 @@ function processServers(err, res, body) {
 
     let response = body.response;
 
-    servers = response.map(({hostname, name, ip, port}) => (
-        new Server(hostname, name, ip, port)
-    ));
+    servers = response.map(({hostname, name, ip, port}) => {
+        log(`Building server ${hostname} on ${ip}:${port}`);
+        return new Server(hostname, name, ip, port)
+    });
 
     servers.forEach((server) => server.boot());
 }
@@ -50,5 +52,5 @@ function queryServers() {
 /**********************
  *    STATIC CALLS    *
  **********************/
-
+log('a log');
 queryServers();
