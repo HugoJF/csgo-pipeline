@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
+import * as Sentry from '@sentry/node';
 
 dotenv.config({path: __dirname + '/.env'});
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+
 import request from 'request';
 import Server from "./Server";
 import {listServersUrl, requestOptions} from "./helpers";
