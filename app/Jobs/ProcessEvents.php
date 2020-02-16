@@ -526,6 +526,8 @@ class ProcessEvents implements ShouldQueue
 	 */
 	protected function info($message)
 	{
+		// avoid spamming tons of lots
+		return;
 		if ($this->command) {
 			$this->command->info($message);
 		} else {
